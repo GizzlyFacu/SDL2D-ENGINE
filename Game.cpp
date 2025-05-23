@@ -1,10 +1,13 @@
 #include "Game.h"
 #include <iostream>
+#include <SDL3_image/SDL_image.h>
+
+
 
 Game::Game() {
 	std::cout << "created new object" << "\n";
 	isRunning = false;
-	isFullscreen = true;//setWindowMode hay que cambiar despues a RealFullcreen(lecture 21)
+	isFullscreen = false;//borrar setWindowMode(lecture 21)
 }
 
 Game::~Game() {
@@ -50,6 +53,10 @@ void Game::Destroy() {
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
 }
+void Game::Setup() {
+
+	//setup
+}
 void Game::ProcessInput() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -68,13 +75,30 @@ void Game::ProcessInput() {
 	}
 }
 void Game::Update() {
-	//object to update
+	//fps limitator
+	while (!TicksPassed(millisecsPreviusTime + MILLISECS_PER_FRAME, SDL_GetTicks()));// si llega a 16.6=true
+	millisecsPreviusTime = SDL_GetTicks();
+	//update:
+	std::cout << "sas" << "\n";
 }
 
 void Game::Render() {
-	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+	Setup();
+	//no entiendo porque el "SetRenderDrawColor" colorea el rect
+	SDL_SetRenderDrawColor(renderer, 21, 21, 21, 255);
 	SDL_RenderClear(renderer);
-	SDL_RenderPresent(renderer);
+
+	SDL_FRect tank_layer{ 10,10,200,200 };//esto es como un "layer" rectangular
+	SDL_Surface* temp_surface= IMG_Load("./assets/images/tank.png");
+	SDL_Texture* temp_texture = SDL_CreateTextureFromSurface(renderer,temp_surface);
+	SDL_RenderTexture(renderer,temp_texture,NULL,&tank_layer);
+	SDL_DestroySurface(temp_surface);
+	SDL_DestroyTexture(temp_texture);
+
+	
+
+
+	SDL_RenderPresent(renderer);//swap to front buffer
 }
 
 void Game::Run() {
@@ -83,4 +107,7 @@ void Game::Run() {
 		Update();
 		Render();
 	}
+}
+inline bool Game::TicksPassed(Uint64 tickInicial, Uint64 tickActual) {
+	return (int64_t)(tickActual - tickInicial) >= 0;
 }
