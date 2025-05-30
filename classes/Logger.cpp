@@ -18,7 +18,7 @@ std::string TimeInfo() {
 }
 void Logger::Log(const std::string message) {
     std::string text = TimeInfo() + "\033[1;32m" + message + "\033[0m\n";
-    std::cout << text;
+    std::cout << text<<"\n";
 
     LogEntry entry{ LogType{LOG_INFO},text };
     messages.push_back(entry);
