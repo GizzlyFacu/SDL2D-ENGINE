@@ -2,8 +2,8 @@
 #define GAME_H
 #include <SDL3/SDL.h>
 #include<glm/glm.hpp>
-
-const int FPS = 1;
+#include "Logger.h"
+const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
 
 class Game
@@ -17,7 +17,7 @@ public:
 
 	void Setup();
 	void ProcessInput();
-	void Update();
+	void Update(double deltaTime);
 	void Render();
 	void Run();
 
@@ -30,11 +30,12 @@ private:
 	bool isFullscreen;
 	unsigned int WINDOW_WIDTH = 800;
 	unsigned int WINDOW_HEIGHT = 600;
-	Uint64 millisecsPreviusTime = 0;
+	int64_t millisecsPreviusTime = 0;
+	int64_t millisecsStartTime = 0;
+	int64_t millisecsFrameTime = 0;
+
 
 	void setWindowMode();
-	inline bool TicksPassed(Uint64 tickInicial, Uint64 tickActual);
-
 };
 
 #endif
